@@ -30,20 +30,41 @@ class Song
     s
   end
 
-  def self.find_by_name(song_name)
+  def self.find_by_name(name)
     @@all.find do |song|
-    song.name == song_name
+    song.name == name
     end
   end
 
   def self.find_or_create_by_name(name)
-    if self.find_by_name
-      self.find_by_name(name)
-    else     
-      self.create_by_name(name)
-  end
+   self.find_by_name(name) || self.create_by_name(name)
 end
 
+  def self.alphabetical
+      @@all.sort_by {|song| song.name}
+  end
+
+  def self.new_from_filename(filename)
+      f = filename.chomp(".mp3").split(" - ")
+      # binding.pry
+      song= self.new
+      song.name = f[1]
+      song.artist_name = f[0]
+      song
+  end
+
+  def self.create_from_filename(filename)
+    f = filename.chomp(".mp3").split(" - ")
+    song = self.new
+    song.name = f[1]
+    song.artist_name = f[0]
+    song.save
+    song
+  end
+
+  def self.destroy_all
+    @@all = []
+  end
 
 end
  
